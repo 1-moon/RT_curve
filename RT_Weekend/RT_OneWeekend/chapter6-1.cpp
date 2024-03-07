@@ -1,16 +1,16 @@
-#include <iostream>
 #include "rtweekend.h"
 #include "color.h"
-#include "sphere_list.h"
+#include "hittable_list.h"
+#include "hittable.h"
 #include "sphere.h"
+#include <iostream>
 
 // Rename getColor to ray_color 
-color ray_color(const ray& r, const sphere_list world) {
+color ray_color(const ray& r, const hittable_list world) {
 	hit_record rec;
 
-	if (world.hit(r, 0, infinity, rec)) {	// kick things off by setting the initial range to 0~infinity
+	if (world.hit(r, interval(0, infinity), rec)) {	// kick things off by setting the initial range to 0~infinity
 		return 0.5 * (rec.normal + color(1, 1, 1));	// hit shaded based on the normal of the closest sphere, passeed back from the output parametre
-
 	}
 
 	Vec3 unit_direction = unit_vector(r.direction());
@@ -42,9 +42,9 @@ int main()
 	const int image_height = static_cast<int>(image_width / aspect_ratio);	// 225px 
 
 	// World 
-	sphere_list world;
-	world.add(sphere(point3(0, 0, -1),0.5)); // smaller sphere
-	world.add(sphere(point3(0, -100.5, -1), 100)); // larger sphere
+	hittable_list world;
+	world.add(make_shared<sphere>(point3(0, 0, -1), 0.5)); // smaller sphere
+	world.add(make_shared<sphere>(point3(0, -100.5, -1), 100)); // larger sphere
 
 
 	// ========== Camera part ===============
@@ -63,12 +63,12 @@ int main()
 	for (int j = image_height - 1; j >= 0; j--) {
 		std::cerr << "Scanlines remaining: " << j << '\n';
 		for (int i = 0; i < image_width; i++) {
-			auto u = double (i) / (image_width - 1);	// 0~1
-			auto v = double (j) / (image_height - 1);	// 0~1
+			auto u = double(i) / (image_width - 1);	// 0~1
+			auto v = double(j) / (image_height - 1);	// 0~1
 			ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
 
 			color pixel_color = ray_color(r, world);
-			
+
 			write_color(std::cout, pixel_color);
 		}
 	}

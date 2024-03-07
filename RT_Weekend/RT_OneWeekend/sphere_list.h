@@ -1,4 +1,4 @@
-#ifndef SPHERE_LIST_H
+ #ifndef SPHERE_LIST_H
 #define SPHERE_LIST_H
 
 #include "sphere.h"
@@ -29,7 +29,7 @@ bool sphere_list::hit(const ray& r, double t_min, double t_max, hit_record& rec)
 	auto closest_so_far = t_max;
 	//loops through the dynamic array, updating that max T value each time 
 	for (const auto& obj : objs) {
-		if (obj.hit(r, t_min, closest_so_far, rec)) {
+		if (obj.hit(r, t_min, closest_so_far, rec)) {	// object being a sphere 
 			hit_anything = true;
 			closest_so_far = rec.t;
 		}
