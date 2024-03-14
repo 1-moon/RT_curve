@@ -13,30 +13,35 @@
 #include <vector>
 #include "rtweekend.h"
 
-class hittable_list : public hittable {
+class Hittable_list : public Hittable {
 	public:
-		hittable_list() {}
-		hittable_list(shared_ptr<hittable>& obj) { add(obj); }
-		// clear the list 
+		// The constructor 
+		Hittable_list() {}
+		Hittable_list(shared_ptr<Hittable>& obj) { add(obj); }
+		
+		// Clear the list 
 		void clear() { objs.clear(); }
-		// add a hittable obj to the list
-		void add(shared_ptr<hittable>& obj) { objs.push_back(obj); }
+		
+		// Add a hittable obj to the list
+		void add(shared_ptr<Hittable>& obj) { objs.push_back(obj); }
 
-
-		bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
+		// Function to test for intersections.
+		bool TestIntersection(const Ray& r, interval ray_t, Hit_record& rec) const override;
 
 	public:
-		// instead of a vec of hittable objs, we'll have a vec of pointers to hittable objs 
-		std::vector<shared_ptr<hittable>> objs;	// hittable is abstract class 
+		// instead of a vec of hittable objs, 
+		// we'll have a vec of pointers to hittable objs 
+		std::vector<shared_ptr<Hittable>> objs;	// hittable is abstract class 
 };
 
-bool hittable_list::hit(const ray& r, interval ray_t, hit_record& rec) const {
+
+bool Hittable_list::TestIntersection(const Ray& r, interval ray_t, Hit_record& rec) const {
 	bool hit_anything = false;
 	auto closest_so_far = ray_t.max;
 
 	//loops through the dynamic array, updating that max T value each time 
 	for (const auto& obj : objs) {
-		if (obj->hit(r, interval(ray_t.min, closest_so_far), rec)) {
+		if (obj->TestIntersection(r, interval(ray_t.min, closest_so_far), rec)) {
 			hit_anything = true;
 			closest_so_far = rec.t;
 		}
