@@ -23,7 +23,8 @@ class Hittable_list : public Hittable {
 		void clear() { objs.clear(); }
 		
 		// Add a hittable obj to the list
-		void add(shared_ptr<Hittable>& obj) { objs.push_back(obj); }
+		//void add(shared_ptr<Hittable>& obj) { objs.push_back(obj); }
+		void add(const std::shared_ptr<Hittable>& obj) { objs.push_back(obj); }
 
 		// Function to test for intersections.
 		bool TestIntersection(const Ray& r, interval ray_t, Hit_record& rec) const override;

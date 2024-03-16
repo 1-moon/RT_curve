@@ -5,9 +5,10 @@
 #include "hittable_list.h"
 #include "hittable.h"
 #include "sphere.h"
-
+#include "camera.h"
 
 color ray_color(const Ray& r, const Hittable_list world) {
+	
 	Hit_record rec;
 
 	if (world.TestIntersection(r, interval(0, infinity), rec)) {	// kick things off by setting the initial range to 0~infinity
@@ -18,6 +19,7 @@ color ray_color(const Ray& r, const Hittable_list world) {
 	auto t = 0.5 * (unit_direction.y() + 1.0);	 // add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
 	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
+/* Testing 
 double hit_sphere(const point3& centre, double radius, point3& o, const Vec3& dirVec) {
 	Vec3 oc = o - centre; // camera origin - centre of the sphere
 	auto a = dot(dirVec, dirVec);  // v = A + tB
@@ -31,7 +33,7 @@ double hit_sphere(const point3& centre, double radius, point3& o, const Vec3& di
 	else {		
 		return (-b - sqrt(discriminant)) / (2.0 * a);	// only care about smaller t value 
 	}
-}
+}*/
 
 int main()
 {
@@ -57,19 +59,28 @@ int main()
 	auto horizontal = Vec3(viewport_width, 0.0, 0.0);
 	auto vertical = Vec3(0.0, viewport_height, 0.0);
 
-	// ========== Render part ===============  
+	// ========== Render part ===============
+	int sample_rays_per_pixel = 10;
 	std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
 	for (int j = image_height - 1; j >= 0; j--) {
 		std::cerr << "Scanlines remaining: " << j << '\n';
 		for (int i = 0; i < image_width; i++) {
-			auto u = double(i) / (image_width - 1);	// 0~1
-			auto v = double(j) / (image_height - 1);	// 0~1
-			Ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+			color pixel_color(0, 0, 0);
+			// Apply anti-aliasing method   
+			for (int sample_ray = 0; sample_ray < sample_rays_per_pixel; ++sample_ray) {
+				// Generate random value [0, 1) 
+				double random_u = static_cast<double>(rand()) / (RAND_MAX + 1.0);
+				double random_v = static_cast<double>(rand()) / (RAND_MAX + 1.0);
 
-			color pixel_color = ray_color(r, world);
-
-			write_color(std::cout, pixel_color);
+				// scalars that vary for each pixel to iterate over the entire plane.
+				auto u = (i + random_u) / (image_width - 1);	// 0~1
+				auto v = (j + random_v) / (image_height - 1);	// 0~1
+				// Create a ray from the camera origin to the pixel on the virtual viewport
+				Ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+				pixel_color += ray_color(r, world);
+			}			
+			write_color(std::cout, pixel_color, sample_rays_per_pixel);
 		}
 	}
 	std::cerr << "\nDone.\n";

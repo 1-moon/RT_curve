@@ -5,7 +5,7 @@
 #include "vec3.h"
 #include "color.h"
 #include "hittable_list.h"
-#include "curve.h"
+#include "bezierCurve.h"
 
 
 
@@ -37,10 +37,10 @@ int main() {
 
 	// World part 
 	Hittable_list world;
-	world.add(make_shared<Curve>(point3(-1, 1/2, -1), point3(-1, 1 / 2, -1),
-							point3(-1, 1 / 2, -1), point3(-1, 1 / 2, -1) ));
+	world.add(make_shared<BezierCurve>(point3(-1, 0, -1), point3(-0.5, 0.5, -1),
+							point3(0.5, -0.5, -1), point3(1, 0, -1) ));
 
-	// Virtual viewport
+	// Set defalut virtual viewport
 	auto origin = point3(0, 0, 0);	// camera origin
 	auto focal_length = 1.0;
 	auto viewport_height = 2.0;
@@ -51,23 +51,29 @@ int main() {
 	auto vertical = Vec3(0.0, viewport_height, 0.0);
 
 	// Render part  
+	int sample_rays_per_pixel = 10;
 	std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
 	for (int j = image_height - 1; j >= 0; j--) {
 		std::cerr << "Scanlines remaining: " << j << '\n';
 		for (int i = 0; i < image_width; i++) {
-			auto u = double(i) / (image_width - 1);		// 0~1
-			auto v = double(j) / (image_height - 1);	// 0~1
-			// Generate a ray 
-			Ray CameraRay(origin, 
-				lower_left_corner + u * horizontal + v * vertical - origin);
-			color pixel_color = ray_color(CameraRay, world);
+			color pixel_color(0, 0, 0);
+			// Apply anti-aliasing method   
+			for (int sample_ray = 0; sample_ray < sample_rays_per_pixel; ++sample_ray) {
+				// Generate random value [0, 1) 
+				double random_u = static_cast<double>(rand()) / (RAND_MAX + 1.0);
+				double random_v = static_cast<double>(rand()) / (RAND_MAX + 1.0);
 
-			write_color(std::cout, pixel_color);
+				// scalars that vary for each pixel to iterate over the entire plane.
+				auto u = (i + random_u) / (image_width - 1);	// 0~1
+				auto v = (j + random_v) / (image_height - 1);	// 0~1
+				// Create a ray from the camera origin to the pixel on the virtual viewport
+				Ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+				pixel_color += ray_color(r, world);
+			}
+			write_color(std::cout, pixel_color, sample_rays_per_pixel);
 		}
 	}
 	std::cerr << "\nDone.\n";
 
-
-	// render part 
 }
