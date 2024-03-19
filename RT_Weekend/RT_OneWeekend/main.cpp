@@ -1,56 +1,62 @@
 
 
 #include <iostream>
-#include "ray.h"
-#include "vec3.h"
+#include "rtweekend.h"
 #include "color.h"
 #include "hittable_list.h"
+#include "hittable.h"
 #include "bezierCurve.h"
+#include "camera.h"
+#include "sphere.h"
 
-
-
-// Create a pixel with this formular 
 color ray_color(const Ray& r, const Hittable_list world) {
 
 	Hit_record rec;
+	// kick things off by setting the initial range 
+	if (world.TestIntersection(r, interval(0.0001, infinity), rec)) {
 
-	// kick things off by setting the initial range to 0~infinity
-	if (world.TestIntersection(r, interval(0, infinity), rec)) {	
-		// hit shaded based on the normal of the closest obj, 
-		// passeed back from the output parameter
-		return 0.5 * (rec.normal + color(1, 1, 1));
+		// Diffuse reflection
+		Vec3 random_reflect_ray = rec.int_p + rec.normal + random_unit_vector();
+		// Set the attenuation factor to 0.5 for a 50% reduction per bounce
+		return 0.5 * ray_color(Ray(rec.int_p, random_reflect_ray - rec.int_p), world);
+		//return 0.5 * (rec.normal + color(1, 1, 1));	// hit shaded based on the normal of the closest sphere, passeed back from the output parametre
+	}
+	else {
+		// Return background color 
+		Vec3 unit_direction = Normalize(r.direction());
+		auto t = 0.5 * (unit_direction.y() + 1.0);	 // add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
+		return (1.0 - t) * color(255.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 	}
 
-	Vec3 unit_direction = Normalize(r.direction());
-	
-	// add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
-	auto t = 0.5 * (unit_direction.y() + 1.0);	 
-	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
-
-int main() {
-	// Image part 
+int main()
+{
+	// Image data 
 	const auto aspect_ratio = 16.0 / 9.0;
 	const int image_width = 400;
-	const int image_height = static_cast<int>(image_width / aspect_ratio);
+	const int image_height = static_cast<int>(image_width / aspect_ratio);	// 225px 
 
 	// World part 
 	Hittable_list world;
-	world.add(make_shared<BezierCurve>(point3(-1, 0, -1), point3(-0.5, 0.5, -1),
-							point3(0.5, -0.5, -1), point3(1, 0, -1) ));
+	world.add(make_shared<BezierCurve>(point3(-1.0f, -1.0f, -1.0f), point3(1.0f, -1.0f, -1.0f),
+								point3(1.0f, -1.0f, 1.0f), point3(-1.0f, -1.0f, 1.0f) ));
+	
+	//world.add(make_shared<Sphere>(point3(0, 0, -1), 0.5)); // smaller sphere
+	//world.add(make_shared<Sphere>(point3(0, -100.5, -1), 100)); // larger sphere
 
-	// Set defalut virtual viewport
-	auto origin = point3(0, 0, 0);	// camera origin
-	auto focal_length = 1.0;
+	// ========== Camera part ===============
+	// virtual viewport
 	auto viewport_height = 2.0;
-	auto viewport_width = aspect_ratio * viewport_height;
-	auto lower_left_corner = origin - Vec3(viewport_width / 2, viewport_height / 2, focal_length); 
+	auto viewport_width = aspect_ratio * viewport_height;	//3.555
+	auto focal_length = 1.0;
 
+	auto origin = point3(0, 0, 0);
+	auto lower_left_corner = origin - Vec3(viewport_width / 2, viewport_height / 2, focal_length);
 	auto horizontal = Vec3(viewport_width, 0.0, 0.0);
 	auto vertical = Vec3(0.0, viewport_height, 0.0);
 
-	// Render part  
+	// ========== Render part ===============
 	int sample_rays_per_pixel = 10;
 	std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
@@ -75,5 +81,4 @@ int main() {
 		}
 	}
 	std::cerr << "\nDone.\n";
-
 }

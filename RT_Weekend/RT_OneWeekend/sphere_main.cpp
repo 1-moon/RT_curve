@@ -10,14 +10,20 @@
 color ray_color(const Ray& r, const Hittable_list world) {
 	
 	Hit_record rec;
-
-	if (world.TestIntersection(r, interval(0, infinity), rec)) {	// kick things off by setting the initial range to 0~infinity
-		return 0.5 * (rec.normal + color(1, 1, 1));	// hit shaded based on the normal of the closest sphere, passeed back from the output parametre
+	// kick things off by setting the initial range 
+	if (world.TestIntersection(r, interval(0.0001, infinity), rec)) {	
+		// Diffuse reflection
+		Vec3 random_reflect_ray = rec.int_p + rec.normal + random_unit_vector();
+		// Set the attenuation factor to 0.5 for a 50% reduction per bounce
+		return 0.5 * ray_color(Ray(rec.int_p, random_reflect_ray - rec.int_p), world);
+		//return 0.5 * (rec.normal + color(1, 1, 1));	// hit shaded based on the normal of the closest sphere, passeed back from the output parametre
+	}else {
+		// Return background color 
+		Vec3 unit_direction = Normalize(r.direction());
+		auto t = 0.5 * (unit_direction.y() + 1.0);	 // add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
+		return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 	}
 
-	Vec3 unit_direction = Normalize(r.direction());
-	auto t = 0.5 * (unit_direction.y() + 1.0);	 // add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
-	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 /* Testing 
 double hit_sphere(const point3& centre, double radius, point3& o, const Vec3& dirVec) {
@@ -26,7 +32,7 @@ double hit_sphere(const point3& centre, double radius, point3& o, const Vec3& di
 	auto b = 2.0 * dot(oc, dirVec);
 	auto c = dot(oc, oc) - radius * radius;
 	auto discriminant = b * b - 4 * a * c; // discriminant
-	// returns true if t value is real 
+	 returns true if t value is real 
 	if (discriminant < 0) {
 		return -1.0;	// return negative number 
 	}

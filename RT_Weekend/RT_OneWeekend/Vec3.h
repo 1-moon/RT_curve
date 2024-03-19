@@ -53,6 +53,13 @@ class Vec3{
 			return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
 		}
 
+		// Gererate random double between 0 and 1
+		static Vec3 random_value_generator() {
+			return Vec3(random_double(), random_double(), random_double());
+		}
+		static Vec3 random_value_generator(double min, double max) {
+			return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+		}
 	public: 
 		double e[3];
 
@@ -60,43 +67,56 @@ class Vec3{
 
 //// utility functions that take vec3 objects 
 // output the vector to the output stream
-std::ostream& operator<<(std::ostream& out, const Vec3& v) {
+inline std::ostream& operator<<(std::ostream& out, const Vec3& v) {
 	return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
 }
 
-Vec3 operator+(const Vec3& u, const Vec3& v) {
+inline Vec3 operator+(const Vec3& u, const Vec3& v) {
 	return Vec3(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
 }
-Vec3 operator-(const Vec3& u, const Vec3& v) {
+inline Vec3 operator-(const Vec3& u, const Vec3& v) {
 	return Vec3(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
 }
-Vec3 operator*(const Vec3& u, const Vec3& v) {
+inline Vec3 operator*(const Vec3& u, const Vec3& v) {
 	return Vec3(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 }
-Vec3 operator*(double t, const Vec3& v) {
+inline Vec3 operator*(double t, const Vec3& v) {
 	return Vec3(t*v.e[0], t*v.e[1], t*v.e[2]);
 }
-Vec3 operator*(const Vec3& v, double t) {
+inline Vec3 operator*(const Vec3& v, double t) {
 	return t * v;
 }
-Vec3 operator/(Vec3 v, double t) {
+inline Vec3 operator/(Vec3 v, double t) {
 	return v * (1 / t);
 }
+
+
 // dot product of two vectors
-double dot(const Vec3& u, const Vec3& v) {
+inline double dot(const Vec3& u, const Vec3& v) {
 	return u.e[0] * v.e[0]
 		+ u.e[1] * v.e[1]
 		+ u.e[2] * v.e[2];
 }
 // cross product of two vectors
-Vec3 cross(const Vec3& u, const Vec3& v) {
+inline Vec3 cross(const Vec3& u, const Vec3& v) {
 	return Vec3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
 				u.e[2] * v.e[0] - u.e[0] * v.e[2],
 				u.e[0] * v.e[1] - u.e[1] * v.e[0]);
 }
 // unit vector of a vector
-Vec3 Normalize(Vec3 v) {
+inline Vec3 Normalize(Vec3 v) {
 	return v / v.length();
+}
+
+inline Vec3 random_in_unit_sphere() {
+	while (true){
+		auto random_point = Vec3::random_value_generator(-1, 1);
+		// return the point if it is inside the unit sphere
+		if (random_point.length_squared()<1) return random_point;
+	}
+}
+inline Vec3 random_unit_vector() {
+	return Normalize(random_in_unit_sphere());
 }
 
 /*	Type alias for Vec3.
