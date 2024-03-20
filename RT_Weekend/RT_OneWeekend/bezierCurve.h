@@ -1,7 +1,7 @@
 #ifndef BEZIERCURVEH
 #define BEZIERCURVEH
 
-#define curve_width 0.2f
+
 #include "hittable.h"
 
 class BezierCurve : public Hittable
@@ -17,10 +17,10 @@ public:
 		ctrl_points.push_back(std::make_shared<point3>(p1));
 		ctrl_points.push_back(std::make_shared<point3>(p2));
 		ctrl_points.push_back(std::make_shared<point3>(p3));
-		ctrl_points.push_back(std::make_shared<point3>(-1.0f, 1.0f, -1.0f));
-		ctrl_points.push_back(std::make_shared<point3>(1.0f, 1.0f, -1.0f));
-		ctrl_points.push_back(std::make_shared<point3>(1.0f, 1.0f, 1.0f));
-		ctrl_points.push_back(std::make_shared<point3>(-1.0f, 1.0f, 1.0f));
+		//ctrl_points.push_back(std::make_shared<point3>(-1.0f, 1.0f, -1.0f));
+		//ctrl_points.push_back(std::make_shared<point3>(1.0f, 1.0f, -1.0f));
+		//ctrl_points.push_back(std::make_shared<point3>(1.0f, 1.0f, 1.0f));
+		//ctrl_points.push_back(std::make_shared<point3>(-1.0f, 1.0f, 1.0f));
 		de_casteljau();
 	};
 
@@ -34,7 +34,7 @@ public:
 	std::vector<shared_ptr<point3>> ctrl_points;
 	std::vector<shared_ptr<point3>> curve_points;
 	//size_t sample_size_;
-
+	double width=0.01f;
 private:
 };
 point3 BezierCurve::de_casteljau_recur(std::vector<shared_ptr<point3>> ctrl_points_,
@@ -96,53 +96,84 @@ void BezierCurve::de_casteljau()
 	}
 }
 
+//
+//bool BezierCurve::TestIntersection(const Ray &castRay, interval ray_t, Hit_record &rec) const
+//{
+//	bool hit_anything = false; 
+//
+//	 // extract each segment of the curve 
+//	for (auto i = 0; i < curve_points.size() - 1; i++) {
+//		point3 start = *curve_points[i];	
+//		point3 end = *curve_points[i + 1];
+//	
+//		Vec3 v = end - start; // segment direction vector 
+//		Vec3 w = castRay.origin() - start; 
+//
+//		Vec3 v_cross_d = cross (v, castRay.direction());
+//
+//		if (v_cross_d.length_squared() < 1e-8) {
+//			// ray is parallel to the segment
+//			continue; 
+//		}
+//
+//		double s = dot(cross(w, castRay.direction()), v_cross_d) / v_cross_d.length_squared();
+//		if (s < 0 || s >1) {
+//			// intersection point is outside the segment
+//			continue;
+//		}
+//
+//		double t = dot(cross(w, v), v_cross_d) / v_cross_d.length_squared();
+//		if (t < 0 || !ray_t.surrounds(t)) {
+//			// interaction point is at behind the ray or outside the interval
+//			continue;
+//		}
+//
+//		if (t < rec.t) {
+//			hit_anything = true;
+//			rec.t = t;
+//			rec.int_p = castRay.at(t);	// intersection point
+//
+//			// normal vector 
+//			Vec3 segment_normal = Normalize(cross(v, cross(v, castRay.direction())));
+//			rec.normal = cross(segment_normal, v);
+//		}
+//		
+//		
+//	}
+//	return hit_anything;
+//}
+bool BezierCurve::TestIntersection(const Ray& castRay, interval ray_t, Hit_record& rec) const {
+	bool hit_anything = false;
+	double closest_so_far = ray_t.max;
 
-bool BezierCurve::TestIntersection(const Ray &castRay, interval ray_t, Hit_record &rec) const
-{
-	bool hit_anything = false; 
+	for (const auto& curve_point : curve_points) {
+		Vec3 oc = castRay.origin() - *curve_point;  
+		auto a = dot(castRay.direction(), castRay.direction());
+		auto half_b = dot(oc, castRay.direction());
+		auto c = dot(oc, oc) - width * width;  
 
-	 // extract each segment of the curve 
-	for (auto i = 0; i < curve_points.size() - 1; i++) {
-		point3 start = *curve_points[i];	
-		point3 end = *curve_points[i + 1];
-	
-		Vec3 v = end - start; // segment direction vector 
-		Vec3 w = castRay.origin() - start; 
+		auto discriminant = half_b * half_b - a * c;
+		if (discriminant < 0) continue; 
 
-		Vec3 v_cross_d = cross (v, castRay.direction());
+		auto sqrtd = sqrt(discriminant);
+		auto root = (-half_b - sqrtd) / a;  
 
-		if (v_cross_d.length_squared() < 1e-8) {
-			// ray is parallel to the segment
-			continue; 
-		}
-
-		double s = dot(cross(w, castRay.direction()), v_cross_d) / v_cross_d.length_squared();
-		if (s < 0 || s >1) {
-			// intersection point is outside the segment
-			continue;
-		}
-
-		double t = dot(cross(w, v), v_cross_d) / v_cross_d.length_squared();
-		if (t < 0 || !ray_t.surrounds(t)) {
-			// interaction point is at behind the ray or outside the interval
-			continue;
-		}
-
-		if (t < rec.t) {
-			hit_anything = true;
-			rec.t = t;
-			rec.int_p = castRay.at(t);	// intersection point
-
-			// normal vector 
-			Vec3 segment_normal = Normalize(cross(v, cross(v, castRay.direction())));
-			rec.normal = cross(segment_normal, v);
-		}
 		
+		if (root < ray_t.min || root > closest_so_far) {
+			root = (-half_b + sqrtd) / a;
+			if (root < ray_t.min || root > closest_so_far) continue;
+		}
+
 		
+		rec.t = root;
+		rec.int_p = castRay.at(rec.t);  
+		rec.normal = Normalize(rec.int_p - *curve_point);  
+
+
+		hit_anything = true;
+		closest_so_far = rec.t;  
 	}
+
 	return hit_anything;
 }
-
-
-
 #endif

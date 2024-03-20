@@ -39,8 +39,8 @@ int main()
 
 	// World part 
 	Hittable_list world;
-	world.add(make_shared<BezierCurve>(point3(-1.0f, -1.0f, -1.0f), point3(1.0f, -1.0f, -1.0f),
-								point3(1.0f, -1.0f, 1.0f), point3(-1.0f, -1.0f, 1.0f) ));
+	world.add(make_shared<BezierCurve>(point3(0, 0, -1), point3(-0.5, 0.5, -3),
+								point3(0.5, -0.5, -1), point3(1, 0, -1) ));
 	
 	//world.add(make_shared<Sphere>(point3(0, 0, -1), 0.5)); // smaller sphere
 	//world.add(make_shared<Sphere>(point3(0, -100.5, -1), 100)); // larger sphere
