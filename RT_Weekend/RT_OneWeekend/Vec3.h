@@ -119,6 +119,18 @@ inline Vec3 random_unit_vector() {
 	return Normalize(random_in_unit_sphere());
 }
 
+
+inline Vec3 reflect(const Vec3& v, const Vec3& n) {
+    return v - 2*dot(v,n)*n;
+}
+
+inline Vec3 refract(const Vec3& uv, const Vec3& n, double etai_over_etat) {
+    auto cos_theta = fmin(dot(-uv, n), 1.0);
+    Vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+    Vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
+}
+
 /*	Type alias for Vec3.
 	point and color can be used interchangeably with vec3 !!! 
 	many operations are the same for points colours and vec3 

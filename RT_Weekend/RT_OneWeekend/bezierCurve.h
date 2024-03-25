@@ -28,7 +28,7 @@ public:
 	void add(const std::shared_ptr<point3> &ctrl_p) { ctrl_points.push_back(ctrl_p); };
 	void de_casteljau();
 	point3 de_casteljau_recur(const std::vector<shared_ptr<point3>>, int i, double t, int k) const;
-	virtual bool TestIntersection(const Ray &castRay, interval ray_t, Hit_record &rec) const;
+	virtual bool TestIntersection(const Ray &castRay, Interval ray_t, Hit_record &rec) const;
 
 public:
 	std::vector<shared_ptr<point3>> ctrl_points;
@@ -142,7 +142,7 @@ void BezierCurve::de_casteljau()
 //	}
 //	return hit_anything;
 //}
-bool BezierCurve::TestIntersection(const Ray& castRay, interval ray_t, Hit_record& rec) const {
+bool BezierCurve::TestIntersection(const Ray& castRay, Interval ray_t, Hit_record& rec) const {
 	bool hit_anything = false;
 	double closest_so_far = ray_t.max;
 

@@ -6,7 +6,7 @@
 // ===================================================================
 
 
-#include "rtweekend.h"
+//#include "utility.h"
 
 #include "hittable_list.h"
 
@@ -36,4 +36,22 @@ class Lambertian : public Material {
 	private:
 		color albedo;	//  A measure of how well a surface reflects incoming light [0,1]
 };
+
+class Metal : public Material {
+public:
+	Metal(const color& a, double f) : albedo(a), fuzz(f < 1 ? f : 1) {}
+
+	bool Material::scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered)
+		const override {
+		Vec3 reflected = reflect(Normalize(r_in.direction()), rec.normal);
+		scattered = Ray(rec.int_p, reflected + fuzz * random_in_unit_sphere());
+		attenuation = albedo;
+		return (dot(scattered.direction(), rec.normal) > 0);
+	}
+
+private:
+	color albedo;
+	double fuzz;
+};
+
 #endif

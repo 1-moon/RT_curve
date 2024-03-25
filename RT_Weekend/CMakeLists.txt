@@ -12,11 +12,13 @@ set (CURVE
  RT_OneWeekend/hittable.h
  RT_OneWeekend/hittable_list.h
  RT_OneWeekend/interval.h
+ RT_OneWeekend/interval.cpp
  RT_OneWeekend/main.cpp
  RT_OneWeekend/ray.h 
  RT_OneWeekend/rtweekend.h
  RT_OneWeekend/sphere.h
  RT_OneWeekend/vec3.h
+ RT_OneWeekend/material.h
 )
 
 

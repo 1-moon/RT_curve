@@ -11,7 +11,7 @@
 
 #include "hittable.h"
 #include <vector>
-#include "rtweekend.h"
+#include "utility.h"
 #include <memory>
 
 
@@ -29,13 +29,13 @@ class Hittable_list : public Hittable {
 		void add(const std::shared_ptr<Hittable>& obj) { objs.push_back(obj); }
 
 		// Function to test for intersections.
-		bool TestIntersection(const Ray& r, interval ray_t, Hit_record& rec) const override {
+		bool Hittable::TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const override {
 			bool hit_anything = false;
 			auto closest_so_far = ray_t.max;
 
 			//loops through the dynamic array, updating that max T value each time 
 			for (const auto& obj : objs) {
-				if (obj->TestIntersection(r, interval(ray_t.min, closest_so_far), rec)) {
+				if (obj->TestIntersection(r, Interval(ray_t.min, closest_so_far), rec)) {
 					hit_anything = true;
 					closest_so_far = rec.t;
 				}

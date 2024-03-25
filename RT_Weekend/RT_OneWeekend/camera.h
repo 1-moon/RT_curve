@@ -3,7 +3,7 @@
 
 #include "color.h"
 #include "hittable.h"
-#include "rtweekend.h"
+#include "utility.h"
 #include <iostream>
 
 class Camera {

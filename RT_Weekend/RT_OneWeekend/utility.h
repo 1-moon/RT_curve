@@ -1,6 +1,6 @@
 
-#ifndef RTWEEKEND_H
-#define RTWEEKEND_H
+#ifndef UTILITY_H
+#define UTILITY_H
 
 #include <limits>
 #include <memory>
@@ -9,7 +9,7 @@
 using std::shared_ptr;
 using std::make_shared;
 using std::numeric_limits;
-
+using std::sqrt;
 // constants
 const double infinity = numeric_limits<double>::infinity();
 
