@@ -8,9 +8,10 @@
 // usings 
 using std::shared_ptr;
 using std::make_shared;
+using std::numeric_limits;
 
 // constants
-const double infinity = std::numeric_limits<double>::infinity();
+const double infinity = numeric_limits<double>::infinity();
 
 // Utility Functions
 inline double random_double() {

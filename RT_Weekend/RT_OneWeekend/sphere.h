@@ -1,20 +1,21 @@
 #ifndef SPHERE_H
 #define SPHERE_H
+#include "rtweekend.h"
 
 #include "hittable.h"
 
 // derive sphere from the hittable class
 class Sphere : public Hittable{
 public:
-	Sphere() {};
-	Sphere(point3 cen, double r) : center(cen), radius(r) {};
+	Sphere(point3 cen, double r, shared_ptr<Material> m)
+		: center(cen), radius(r), material(m) {};
 	// function hit , override the abstact class  
 	virtual bool TestIntersection(const Ray& r, interval ray_t, Hit_record& rec) const;
 
 public: // Sphere class member 
 	point3 center;
 	double radius;
-
+	shared_ptr<Material> material;
 };
 
 bool Sphere::TestIntersection(const Ray& cameraRay, interval ray_t, Hit_record& rec) const {	 
@@ -37,6 +38,7 @@ bool Sphere::TestIntersection(const Ray& cameraRay, interval ray_t, Hit_record& 
 	rec.t = root;
 	rec.int_p = cameraRay.at(rec.t);
 	rec.normal = (rec.int_p - center) / radius;
+	rec.mat_ptr= material;
 	return true;
 
 }
