@@ -48,7 +48,7 @@ public:
 
 
 private:
-	int image_height;
+	int image_height=0;
 	//virtual viewport
 	//double viewport_height;
 	//double viewport_width;
@@ -95,7 +95,7 @@ private:
 
 		Hit_record record;
 		// kick things off by setting the initial range 
-		if (world.TestIntersection(r, Interval(0.0001, infinity), record)) {
+		if (world.TestIntersection(r, Interval(0.000001, infinity), record)) {
 			/*
 			//Diffuse reflection
 			Vec3 random_reflect_ray = rec.int_p + rec.normal + random_unit_vector();
