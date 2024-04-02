@@ -101,12 +101,12 @@ private:
 			Vec3 random_reflect_ray = rec.int_p + rec.normal + random_unit_vector();
 			return 0.5 * ray_color(Ray(rec.int_p, random_reflect_ray - rec.int_p), world); // // Set the attenuation factor to 0.5 for a 50% reduction per bounce
 			*/
-
 			// Reflection - material scatter
 			Ray scattered;
-			color attenuation;
-			if (record.mat_ptr->scatter(r, record, attenuation, scattered))
-				return attenuation * ray_color(scattered, world, depth - 1);
+			color light_attenuation;
+			color emitted_color = record.mat_ptr->emitted(record.u, record.v, record.int_p);
+			if (record.mat_ptr->scatter(r, record, light_attenuation, scattered))
+				return light_attenuation * ray_color(scattered, world, depth - 1);
 			return color(0, 0, 0);
 
 		}

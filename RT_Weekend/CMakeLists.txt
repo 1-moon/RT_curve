@@ -19,6 +19,8 @@ set ( CURVE
  RT_OneWeekend/sphere.h
  RT_OneWeekend/vec3.h
  RT_OneWeekend/material.h
+ RT_OneWeekend/texture.h
+
 )
 
 include_directories(RT_OneWeekend)

@@ -9,6 +9,7 @@
 //#include "utility.h"
 
 #include "hittable_list.h"
+#include "texture.h"
 
 class Material{
 
@@ -17,24 +18,30 @@ public :
 	virtual ~Material() =default;
 
 	virtual bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const = 0;
+	virtual color emitted(double u, double v, const point3& p) const {
+		return color(0, 0, 0);
+	}
 };
 
 
 class Lambertian : public Material {
 	public:
-		Lambertian(const color& a) : albedo(a) {}
+		Lambertian(const color& a) : albedo(make_shared<Constant_texture>(a)) {}
+		Lambertian(shared_ptr<Texture> t) : albedo(t) {}
+
 		//  Scatter incoming light in all directions uniformly
 		bool Material::scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const override {
 		
-			auto scatter_dir = rec.normal + random_unit_vector();
-		
-			scattered = Ray(rec.int_p, scatter_dir);
-			attenuation = albedo;
+			//auto scatter_dir = rec.normal + random_unit_vector();
+
+			auto scatter_dir = rec.int_p + rec.normal + random_unit_vector();
+			scattered = Ray(rec.int_p, scatter_dir-rec.int_p);
+			attenuation = albedo->texture_value(rec.u, rec.v, rec.int_p);
 			return true;
 		}	
 
 	private:
-		color albedo;	//  A measure of how well a surface reflects incoming light [0,1]
+		shared_ptr<Texture> albedo;	//  A measure of how well a surface reflects incoming light [0,1]
 };
 
 class Metal : public Material {
@@ -53,5 +60,18 @@ private:
 	color albedo;
 	double fuzz;
 };
+
+//class Luminant : public Material {
+//	public :
+//		Luminant (shared_ptr<Texture> texture_) : emit(texture_) {}
+//		virtual bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const override {
+//			return false;	// no reflection 
+//		}
+//		virtual Vec3 emitted(double u, double v, const Vec3& p)const {
+//			return emit->texture_value(u, v, p);
+//		}
+//	private :
+//		shared_ptr<Texture> emit;
+//};
 
 #endif
