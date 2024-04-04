@@ -7,6 +7,12 @@
 class BezierCurve : public Hittable
 {
 public:
+	std::vector<point3> ctrl_points;
+	std::vector<point3> curve_points;
+	shared_ptr<Material> material;
+	double width = 0.1f;
+
+public:
 	// Default constructor
 	BezierCurve(){};
 	// Constructor with 4 control points
@@ -29,11 +35,7 @@ public:
 	point3 de_casteljau_recur(const std::vector<point3>, int i, double t, int k) const;
 	virtual bool TestIntersection(const Ray &castRay, Interval ray_t, Hit_record &rec) const;
 
-public:
-	std::vector<point3> ctrl_points;
-	std::vector<point3> curve_points;
-	shared_ptr<Material> material;
-	double width=0.1f;
+
 
 };
 point3 BezierCurve::de_casteljau_recur(std::vector<point3> ctrl_points_,

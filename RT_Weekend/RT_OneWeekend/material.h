@@ -61,17 +61,18 @@ private:
 	double fuzz;
 };
 
-//class Luminant : public Material {
-//	public :
-//		Luminant (shared_ptr<Texture> texture_) : emit(texture_) {}
-//		virtual bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const override {
-//			return false;	// no reflection 
-//		}
-//		virtual Vec3 emitted(double u, double v, const Vec3& p)const {
-//			return emit->texture_value(u, v, p);
-//		}
-//	private :
-//		shared_ptr<Texture> emit;
-//};
+class Luminant : public Material {
+	public :
+		Luminant (shared_ptr<Texture> texture_) : emit(texture_) {}
+		Luminant(const color& _color) : emit(make_shared<Constant_texture>(_color)) {}
+		virtual bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const override {
+			return false;	// no reflection 
+		}
+		virtual Vec3 emitted(double u, double v, const Vec3& p)const {
+			return emit->texture_value(u, v, p);
+		}
+	private :
+		shared_ptr<Texture> emit;
+};
 
 #endif

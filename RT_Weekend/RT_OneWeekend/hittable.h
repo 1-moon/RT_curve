@@ -26,9 +26,5 @@ class Hittable {
 
 };
 
-//class xy_rect : public Hittable {
-//	public :
-//		xy_rect() {}
-//};
 
 #endif 

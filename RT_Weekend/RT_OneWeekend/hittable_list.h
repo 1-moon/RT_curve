@@ -17,6 +17,11 @@
 
 class Hittable_list : public Hittable {
 	public:
+		// Instead of a vec of hittable objs, 
+		// I'll have a vec of pointers to hittable objs 
+		std::vector<shared_ptr<Hittable>> objs;	// hittable is abstract class 
+	
+	public:
 		// The constructor 
 		Hittable_list() {}
 		Hittable_list(shared_ptr<Hittable>& obj) { add(obj); }
@@ -43,13 +48,6 @@ class Hittable_list : public Hittable {
 			return hit_anything;
 		}
 
-
-	public:
-		// instead of a vec of hittable objs, 
-		// we'll have a vec of pointers to hittable objs 
-		std::vector<shared_ptr<Hittable>> objs;	// hittable is abstract class 
 };
-
-
 
 #endif
