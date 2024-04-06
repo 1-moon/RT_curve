@@ -4,14 +4,14 @@
 
 #include "bezierCurve.h"
 #include "boundingBox.h"
-#include <cassert>
+
 class BezierSurface : public Hittable {
 public:
     BezierSurface() : ctrl_points_(nullptr) {}
     BezierSurface(point3* controlPoints, shared_ptr<Material> mat)
         : ctrl_points_(controlPoints), material_(mat) {}
 
-    double bernstein(int i, int n, double t) const;  
+    
     point3 cubicPolynomial(const point3* P, const double& t) const;  
 
     point3 BezierSurfacePoint(const point3* controlPoints, const double& u, const double& v)const;
@@ -24,17 +24,6 @@ public:
     shared_ptr<Material> material_;
     double width = 1.0f;
 };
-
-double bernsteinTerm(int i, int n, double t)
-{
-    assert(t >= 0.0 && t <= 1.0);
-    double multiplier = 1.0;
-
-    for (int k = 0; k < i; ++k)
-        multiplier = multiplier * t * (n - k) / (i - k);
-
-    return multiplier * pow(1 - t, n - i);
-}
 
 point3 BezierSurface::cubicPolynomial(const point3* ctrl_p, const double& t)const {
     double b0 = bernsteinTerm(0, 3, t);

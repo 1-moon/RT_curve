@@ -5,6 +5,7 @@
 #include "hittable.h"
 #include "utility.h"
 #include <vector>
+#include <cassert>
 class BezierCurve : public Hittable
 {
 public:
@@ -34,6 +35,7 @@ public:
 	void add(const point3& ctrl_p) { ctrl_points.push_back(ctrl_p); };
 	void de_casteljau();
 	point3 de_casteljau_recur(const std::vector<point3>, int i, double t, int k) const;
+	double bernstein(int i, int n, double t) const;
 	virtual bool TestIntersection(const Ray &castRay, Interval ray_t, Hit_record &rec) const;
 
 
@@ -89,6 +91,17 @@ void BezierCurve::de_casteljau()
 	}
 }
 
+double bernsteinTerm(int i, int n, double t)
+{
+	assert(t >= 0.0 && t <= 1.0);
+	double multiplier = 1.0;
+
+	for (int k = 0; k < i; ++k)
+		multiplier = multiplier * t * (n - k) / (i - k);
+
+	return multiplier * pow(1 - t, n - i);
+}
+
 bool BezierCurve::TestIntersection(const Ray& castRay, Interval ray_t, Hit_record& rec) const {
 	bool hit_anything = false;
 	double closest_so_far = ray_t.max;
@@ -123,4 +136,6 @@ bool BezierCurve::TestIntersection(const Ray& castRay, Interval ray_t, Hit_recor
 
 	return hit_anything;
 }
+
+
 #endif
