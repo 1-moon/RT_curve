@@ -22,6 +22,7 @@ set ( CURVE
  RT_OneWeekend/texture.h
  RT_OneWeekend/boundingBox.h
  RT_OneWeekend/bezierSurface.h
+ RT_OneWeekend/triangle.h
 )
 
 include_directories(RT_OneWeekend)
