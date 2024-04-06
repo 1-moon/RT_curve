@@ -2,6 +2,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include <cmath>
+#include <cstdlib>
 #include <limits>
 #include <memory>
 
@@ -10,6 +12,8 @@ using std::shared_ptr;
 using std::make_shared;
 using std::numeric_limits;
 using std::sqrt;
+
+
 // constants
 const double infinity = numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;

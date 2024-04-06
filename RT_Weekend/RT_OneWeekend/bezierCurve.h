@@ -3,14 +3,15 @@
 
 
 #include "hittable.h"
-
+#include "utility.h"
+#include <vector>
 class BezierCurve : public Hittable
 {
 public:
 	std::vector<point3> ctrl_points;
 	std::vector<point3> curve_points;
 	shared_ptr<Material> material;
-	double width = 0.1f;
+	double width = 0.3f;
 
 public:
 	// Default constructor

@@ -20,7 +20,8 @@ set ( CURVE
  RT_OneWeekend/vec3.h
  RT_OneWeekend/material.h
  RT_OneWeekend/texture.h
-
+ RT_OneWeekend/boundingBox.h
+ RT_OneWeekend/bezierSurface.h
 )
 
 include_directories(RT_OneWeekend)

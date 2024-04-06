@@ -122,45 +122,45 @@ private:
 		
 		Hit_record record;
 
-		if (world.TestIntersection(r, Interval(0.0001, infinity), record)) {
-			Ray scattered;
-			color light_attenuation;
-			color emittion_color = record.mat_ptr->emitted(record.u, record.v, record.int_p);
-			
-			if (!record.mat_ptr->scatter(r, record, light_attenuation, scattered)) 
-				return emittion_color;
-
-			color color_from_scatter = light_attenuation * ray_color(scattered, world, depth - 1);
-			return emittion_color + color_from_scatter;
-
-		}else {
-			// no object hit? -> return dark
-			return color(0, 0, 0);
-		}
-
-
-
-		//if (world.TestIntersection(r, Interval(0.000001, infinity), record)) {
-		//	/*
-		//	//Diffuse reflection
-		//	Vec3 random_reflect_ray = rec.int_p + rec.normal + random_unit_vector();
-		//	return 0.5 * ray_color(Ray(rec.int_p, random_reflect_ray - rec.int_p), world); // // Set the attenuation factor to 0.5 for a 50% reduction per bounce
-		//	*/
-		//	// Reflection - material scatter
+		//if (world.TestIntersection(r, Interval(0.0001, infinity), record)) {
 		//	Ray scattered;
 		//	color light_attenuation;
-		//	color emitted_color = record.mat_ptr->emitted(record.u, record.v, record.int_p);
-		//	if (record.mat_ptr->scatter(r, record, light_attenuation, scattered))
-		//		return light_attenuation * ray_color(scattered, world, depth - 1);
-		//	return color(0, 0, 0);
+		//	color emittion_color = record.mat_ptr->emitted(record.u, record.v, record.int_p);
+		//	
+		//	if (!record.mat_ptr->scatter(r, record, light_attenuation, scattered)) 
+		//		return emittion_color;
 
+		//	color color_from_scatter = light_attenuation * ray_color(scattered, world, depth - 1);
+		//	return emittion_color + color_from_scatter;
+
+		//}else {
+		//	// no object hit? -> return dark
+		//	return color(0, 0, 0);
 		//}
-		//else {
-		//	// Return background color 
-		//	Vec3 unit_direction = Normalize(r.direction());
-		//	auto t = 0.5 * (unit_direction.y() + 1.0);	 // add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
-		//	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
-		//}
+
+
+
+		if (world.TestIntersection(r, Interval(0.000001, infinity), record)) {
+			/*
+			//Diffuse reflection
+			Vec3 random_reflect_ray = rec.int_p + rec.normal + random_unit_vector();
+			return 0.5 * ray_color(Ray(rec.int_p, random_reflect_ray - rec.int_p), world); // // Set the attenuation factor to 0.5 for a 50% reduction per bounce
+			*/
+			// Reflection - material scatter
+			Ray scattered;
+			color light_attenuation;
+			color emitted_color = record.mat_ptr->emitted(record.u, record.v, record.int_p);
+			if (record.mat_ptr->scatter(r, record, light_attenuation, scattered))
+				return light_attenuation * ray_color(scattered, world, depth - 1);
+			return color(0, 0, 0);
+
+		}
+		else {
+			// Return background color 
+			Vec3 unit_direction = Normalize(r.direction());
+			auto t = 0.5 * (unit_direction.y() + 1.0);	 // add 1 to ensure it's above zero, multiply by 0.5 to get a num between 0~1
+			return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
+		}
 
 	}
 };
