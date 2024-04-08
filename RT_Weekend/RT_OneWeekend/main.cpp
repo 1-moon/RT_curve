@@ -10,7 +10,7 @@
 #include "bezierCurve.h"
 #include "bezierSurface.h"
 #include "sphere.h"
-
+#include "triangle.h"
 
 int main()
 {
@@ -36,7 +36,8 @@ int main()
 	//world.add(make_shared<BezierCurve>(point3(0, 1, -1), point3(-0.5, 1, -3),
 	//							point3(0.5, 1, -1), point3(1, 1, -1), Material_lambertian));
 	world.add(make_shared<BezierSurface>(controlPoints.data(), surfaceMaterial));
-
+	// 
+	//world.add(make_shared<Triangle>(point3(-1.5, 0, -1.5), point3(-1.5, 1, -0.5), point3(-1.5, -1, 0.5),surfaceMaterial));
 	//world.add(make_shared<Sphere>(point3(0, -100.5, -1), 100, make_shared<Lambertian>(checker)));
 	//world.add(make_shared<Sphere>(point3(0, -1000, 0), 1000, ground_material));
 	//world.add(make_shared<Sphere>(point3(0, 9, 0), 3, lightening));

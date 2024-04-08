@@ -33,15 +33,8 @@ public:
 				color pixel_color(0, 0, 0);
 				// Apply anti-aliasing method   
 				for (int sample_ray = 0; sample_ray < sample_rays_per_pixel; ++sample_ray) {
+					Ray r = anti_aliasied_ray(i, j);
 
-					Ray r = get_ray(i, j);
-					//// Generate random value [0, 1] 
-					//double random_u = static_cast<double>(rand()) / (RAND_MAX + 1.0);
-					//double random_v = static_cast<double>(rand()) / (RAND_MAX + 1.0);
-
-					//// scalars that vary for each pixel to iterate over the entire plane.
-					//auto u = (i + random_u) / (image_width - 1);	// 0~1
-					//auto v = (j + random_v) / (image_height - 1);	// 0~1
 					//// Create a ray from the camera origin to the pixel on the virtual viewport
 					//Ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
 					pixel_color += ray_color(r, world, max_depth);
@@ -71,7 +64,24 @@ private:
 	int sample_rays_per_pixel = 10;
 	// camera coordinates 
 	  
+	Ray anti_aliasied_ray(int i, int j) {
 
+		
+		// Generate random value [0, 1] 
+		double random_u = static_cast<double>(rand()) / (RAND_MAX + 1.0);
+		double random_v = static_cast<double>(rand()) / (RAND_MAX + 1.0);
+		// Generate random value in a pixel
+		point3 random_value = random_u* pixel_u_vec + random_v * pixel_v_vec;
+
+		Vec3 pixel_center = pixel_loc_00 + (i * pixel_u_vec) + (j * pixel_v_vec);
+		point3 ray_origin = camera_origin;
+
+		// Get a random point in the pixel
+		auto pixel_sample = pixel_center + random_value;
+		auto ray_dir = pixel_sample - ray_origin;
+		//  Get a anti-aliasied ray for pixel at (i,j)
+		return Ray(ray_origin, ray_dir);
+	}
 
 
 	void init() {
@@ -108,14 +118,6 @@ private:
 		
 	}
 
-	Ray get_ray(int i, int j) {
-		//  Get a anti-aliasied ray for pixel at (i,j)
-		Vec3 pixel_sample = pixel_loc_00 + (i * pixel_u_vec) + (j * pixel_v_vec);
-		point3 ray_origin = camera_origin;
-		
-		auto ray_dir = pixel_sample - ray_origin;
-		return Ray(ray_origin, ray_dir);
-	}
 
 
 	color ray_color(const Ray& r, const Hittable_list world, int depth) {

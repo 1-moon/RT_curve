@@ -19,7 +19,7 @@ public :
 
 	virtual bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const = 0;
 	virtual color emitted(double u, double v, const point3& p) const {
-		return color(0, 0, 0);
+		return color(0, 0, 0);	// 0 intensity
 	}
 };
 
