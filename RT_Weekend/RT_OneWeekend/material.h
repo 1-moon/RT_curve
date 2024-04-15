@@ -30,12 +30,15 @@ class Lambertian : public Material {
 		Lambertian(shared_ptr<Texture> t) : albedo(t) {}
 
 		//  Scatter incoming light in all directions uniformly
-		bool Material::scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const override {
-		
-			//auto scatter_dir = rec.normal + random_unit_vector();
+		bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered)
+		const override {	
+			auto scatter_dir = rec.normal + random_unit_vector();
+			
+			// Catch degenerate scatter direction
+			if (scatter_dir.near_zero())
+				scatter_dir = rec.normal;
 
-			auto scatter_dir = rec.int_p + rec.normal + random_unit_vector();
-			scattered = Ray(rec.int_p, scatter_dir-rec.int_p);
+			scattered = Ray(rec.int_p, scatter_dir);
 			attenuation = albedo->texture_value(rec.u, rec.v, rec.int_p);
 			return true;
 		}	
@@ -64,11 +67,14 @@ private:
 class Luminant : public Material {
 	public :
 		Luminant (shared_ptr<Texture> texture_) : emit(texture_) {}
-		Luminant(const color& _color) : emit(make_shared<Constant_texture>(_color)) {}
-		virtual bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered) const override {
+		Luminant(color& _color) : emit(make_shared<Constant_texture>(_color)) {}
+		
+		bool scatter(const Ray& r_in, const Hit_record& rec, color& attenuation, Ray& scattered)
+		const override {
 			return false;	// no reflection 
 		}
-		virtual Vec3 emitted(double u, double v, const Vec3& p)const {
+
+		color emitted(double u, double v, const Vec3& p)const override {
 			return emit->texture_value(u, v, p);
 		}
 	private :

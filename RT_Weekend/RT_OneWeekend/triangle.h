@@ -3,21 +3,36 @@
 
 #include "utility.h"
 #include "hittable.h"
+#include "aabb.h"
+
 constexpr double kEpsilon = 1e-8;
 class Triangle : public Hittable {
 public:
     Triangle(const point3& v0, const point3& v1, const point3& v2, shared_ptr<Material> m)
-        : vertex0(v0), vertex1(v1), vertex2(v2), material(m) {}
+        : vertex0(v0), vertex1(v1), vertex2(v2), material(m) {
+    
+        point3 min(fmin(fmin(vertex0.x(), vertex1.x()), vertex2.x()),
+            fmin(fmin(vertex0.y(), vertex1.y()), vertex2.y()),
+            fmin(fmin(vertex0.z(), vertex1.z()), vertex2.z()));
+        point3 max(fmax(fmax(vertex0.x(), vertex1.x()), vertex2.x()),
+            fmax(fmax(vertex0.y(), vertex1.y()), vertex2.y()),
+            fmax(fmax(vertex0.z(), vertex1.z()), vertex2.z()));
+        bBox = Aabb(min, max);  // Store the computed bounding box
+    }
 
     virtual bool TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const override;
-
+    virtual Aabb BoundingBox() const override { return bBox; }
 public:
-    point3 vertex0, vertex1, vertex2; // 삼각형의 꼭짓점
-    shared_ptr<Material> material; // 재질
+    point3 vertex0, vertex1, vertex2; 
+    shared_ptr<Material> material; 
+    Aabb bBox;
 };
 
+
+
 bool Triangle::TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const {
-    // 광선-삼각형 교차 알고리즘 구현
+    
+    // ray- tirangle intersection test
     Vec3 v0v1 = vertex1 - vertex0;
     Vec3 v0v2 = vertex2 - vertex0;
     Vec3 pvec = cross(r.direction(), v0v2);

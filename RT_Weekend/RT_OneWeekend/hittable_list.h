@@ -9,10 +9,13 @@
 #ifndef HITTABLE_LIST_H
 #define HITTABLE_LIST_H
 
-#include "hittable.h"
+
 #include <vector>
-#include "utility.h"
 #include <memory>
+#include "hittable.h"
+#include "utility.h"
+#include "aabb.h"
+
 
 
 class Hittable_list : public Hittable {
@@ -30,8 +33,11 @@ class Hittable_list : public Hittable {
 		void clear() { objs.clear(); }
 		
 		// Add a hittable obj to the list
-		//void add(shared_ptr<Hittable>& obj) { objs.push_back(obj); }
-		void add(const std::shared_ptr<Hittable>& obj) { objs.push_back(obj); }
+		void Hittable_list::add(shared_ptr<Hittable> obj) {
+			objs.push_back(obj); 
+			// Add bounding box as well
+			bBox = Aabb(bBox, obj->BoundingBox());
+		}
 
 		// Function to test for intersections.
 		bool Hittable::TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const override {
@@ -48,6 +54,9 @@ class Hittable_list : public Hittable {
 			return hit_anything;
 		}
 
+		Aabb BoundingBox() const override {return bBox;}
+private: 
+	Aabb bBox;	// empty bounding box
 };
 
 #endif
