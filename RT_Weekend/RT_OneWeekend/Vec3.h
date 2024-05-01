@@ -132,7 +132,6 @@ inline Vec3 random_unit_vector() {
 	return Normalize(random_in_unit_sphere());
 }
 
-
 inline Vec3 reflect(const Vec3& v, const Vec3& n) {
     return v - 2*dot(v,n)*n;
 }

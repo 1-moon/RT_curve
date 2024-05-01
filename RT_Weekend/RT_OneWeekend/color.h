@@ -17,9 +17,7 @@ void write_color(std::ostream& out, color pixel_color, int samples_rays_per_pixe
 
 	// Divide the color by the number of rays per pixel 
 	auto scale = 1.0 / samples_rays_per_pixel;
-	/*r_pixel *= scale;
-	g_pixel *= scale; 
-	b_pixel *= scale; */
+
 	r_pixel = r_pixel * scale;
 	g_pixel = g_pixel * scale;
 	b_pixel = b_pixel * scale;
@@ -29,16 +27,10 @@ void write_color(std::ostream& out, color pixel_color, int samples_rays_per_pixe
 	g_pixel = sqrt(g_pixel);
 	b_pixel = sqrt(b_pixel);
 
-	//// Write the translated [0,255] value of each color component
-	//out << static_cast<int>(255.999 * r_pixel) << ' '
-	//	<< static_cast<int>(255.999 * g_pixel) << ' '
-	//	<< static_cast<int>(255.999 * b_pixel) << '\n';
-
-	// Write the translated [0,255] value of each color component.
-	static const Interval intensity(0.000, 0.999);
-	out << static_cast<int>(256 * intensity.clamp(r_pixel)) << ' '
-		<< static_cast<int>(256 * intensity.clamp(g_pixel)) << ' '
-		<< static_cast<int>(256 * intensity.clamp(b_pixel)) << '\n';
+	// Write the translated [0,255] value of each color component
+	out << static_cast<int>(255.999 * r_pixel) << ' '
+		<< static_cast<int>(255.999 * g_pixel) << ' '
+		<< static_cast<int>(255.999 * b_pixel) << '\n';
 }	
 
 #endif

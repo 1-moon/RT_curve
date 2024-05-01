@@ -14,7 +14,6 @@
 #include <memory>
 #include "hittable.h"
 #include "utility.h"
-#include "aabb.h"
 
 
 
@@ -35,8 +34,6 @@ class Hittable_list : public Hittable {
 		// Add a hittable obj to the list
 		void Hittable_list::add(shared_ptr<Hittable> obj) {
 			objs.push_back(obj); 
-			// Add bounding box as well
-			bBox = Aabb(bBox, obj->BoundingBox());
 		}
 
 		// Function to test for intersections.
@@ -53,10 +50,6 @@ class Hittable_list : public Hittable {
 			}
 			return hit_anything;
 		}
-
-		Aabb BoundingBox() const override {return bBox;}
-private: 
-	Aabb bBox;	// empty bounding box
 };
 
 #endif

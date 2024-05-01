@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.1.0)
 project(RT_OneWeekend VERSION 3.0.0 LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 11)
 
-set ( CURVE
+set ( curve
  RT_OneWeekend/bezierCurve.h
  RT_OneWeekend/camera.h
  RT_OneWeekend/color.h
@@ -20,11 +20,9 @@ set ( CURVE
  RT_OneWeekend/vec3.h
  RT_OneWeekend/material.h
  RT_OneWeekend/texture.h
- RT_OneWeekend/aabb.h
  RT_OneWeekend/bezierSurface.h
  RT_OneWeekend/triangle.h
  RT_OneWeekend/quadratic.h
- RT_OneWeekend/bvh.h
 )
 
 include_directories(RT_OneWeekend)

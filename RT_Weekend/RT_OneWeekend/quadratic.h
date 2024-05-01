@@ -15,11 +15,9 @@ public:
 		unit_normal = Normalize(normal_vec);
 		D = dot(unit_normal, vertex);
 		w = normal_vec / dot(normal_vec, normal_vec);  
-		
-		bBox = Aabb(vertex, vertex + u + v).pad();
 	}
 
-	Aabb BoundingBox() const override { return bBox; }
+	//Aabb BoundingBox() const override { return bBox; }
 
 	bool TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const override {
 
@@ -70,8 +68,6 @@ public:
 		Vec3 unit_normal;
 		double D;
 		Vec3 w;
-
-		Aabb bBox;
 
 };
 
