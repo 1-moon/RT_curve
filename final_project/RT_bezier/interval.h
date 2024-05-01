@@ -28,12 +28,6 @@ public:
         return Interval(min - padding, max + padding);
     }
 
-    double clamp(double x) const {
-        if (x < min) return min;
-        if (x > max) return max;
-        return x;
-    }
-
     friend Interval operator+(const Interval& ival, double displacement);
     friend Interval operator+(double displacement, const Interval& ival);
 };

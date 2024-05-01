@@ -14,7 +14,7 @@ public:
 	std::vector<point3> ctrl_points;
 	std::vector<point3> curve_points;
 	shared_ptr<Material> material;
-	double width = 10.3f;
+	double width = 10.3f; // Width of the curve//
 public:
 	// Default constructor
 	BezierCurve(){};
@@ -109,74 +109,75 @@ bool BezierCurve::TestIntersection(const Ray& castRay, Interval ray_t, Hit_recor
 	double closest_so_far = ray_t.max;
 
 	// =========================quadratic intersection=========================
-	for (int i = 0; i < curve_points.size() - 1; i++) {
-		// Calculate the normal at the current point on the curve
-		Vec3 curve_tangent = curve_points[i + 1] - curve_points[i];
-		Vec3 arbitrary_normal(0, 1, 0); // Default normal for simplicity
-		if (curve_tangent.length() > 0) {
-			arbitrary_normal = Normalize(cross(curve_tangent, Vec3(0, 0, 1))); // Assuming Z is up
-		}
+	//for (int i = 0; i < curve_points.size() - 1; i++) {
+	//	// Calculate the normal at the current point on the curve
+	//	Vec3 curve_tangent = curve_points[i + 1] - curve_points[i];
+	//	Vec3 arbitrary_normal(0, 1, 0); // Default normal for simplicity
+	//	if (curve_tangent.length() > 0) {
+	//		arbitrary_normal = Normalize(cross(curve_tangent, Vec3(0, 0, 1))); // Assuming Z is up
+	//	}
 
-		Vec3 curve_normal = Normalize(cross(curve_tangent, arbitrary_normal));
-		Vec3 width_offset = curve_normal * (width / 2.0);
+	//	Vec3 curve_normal = Normalize(cross(curve_tangent, arbitrary_normal));
+	//	Vec3 width_offset = curve_normal * (width / 2.0);
 
-		// Define the vertices of the quad
-		point3 v0 = curve_points[i] - width_offset;
-		point3 v1 = curve_points[i] + width_offset;
-		point3 v2 = curve_points[i + 1] - width_offset;
-		point3 v3 = curve_points[i + 1] + width_offset;
+	//	// Define the vertices of the quad
+	//	point3 v0 = curve_points[i] - width_offset;
+	//	point3 v1 = curve_points[i] + width_offset;
+	//	point3 v2 = curve_points[i + 1] - width_offset;
+	//	point3 v3 = curve_points[i + 1] + width_offset;
 
-		// Create quad objects
-		Quadrangle quad1(v0, v1 - v0, v3 - v1, material); // Using two sides as the vector directions
-		Quadrangle quad2(v0, v3 - v0, v2 - v0, material); // Second part of quad to cover entire face
+	//	// Create quad objects
+	//	Quadrangle quad1(v0, v1 - v0, v3 - v1, material); // Using two sides as the vector directions
+	//	Quadrangle quad2(v0, v3 - v0, v2 - v0, material); // Second part of quad to cover entire face
 
-		// Test intersection with the first part of the quad
-		if (quad1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-			hit_anything = true;
-			closest_so_far = rec.t;
-		}
+	//	// Test intersection with the first part of the quad
+	//	if (quad1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+	//		hit_anything = true;
+	//		closest_so_far = rec.t;
+	//	}
 
-		// Test intersection with the second part of the quad
-		if (quad2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-			hit_anything = true;
-			closest_so_far = rec.t;
-		}
-	}
+	//	// Test intersection with the second part of the quad
+	//	if (quad2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+	//		hit_anything = true;
+	//		closest_so_far = rec.t;
+	//	}
+	//}
 
 
 	// =========================triangle intersection=========================
-	for (int i = 0; i < curve_points.size() - 1; i++) {
-		Vec3 tangent = curve_points[i + 1] - curve_points[i]; // Calculate the tangent vector
-		Vec3 normalized_tangent = Normalize(tangent);		  // Normalize the tangent vector
+	//for (int i = 0; i < curve_points.size() - 1; i++) {
+	//	Vec3 tangent = curve_points[i + 1] - curve_points[i]; // Calculate the tangent vector
+	//	Vec3 normalized_tangent = Normalize(tangent);		  // Normalize the tangent vector
 
-		// A simple way to calculate the normal vector is to cross with the Y or Z axis
-		Vec3 arbitrary_vector = (fabs(normalized_tangent.y()) > 0.9) ? Vec3(0, 0, 1) : Vec3(0, 1, 0);
-		Vec3 curve_normal = Normalize(cross(normalized_tangent, arbitrary_vector));
-		Vec3 offset = Normalize(curve_normal) * (width / 2.0);
+	//	// A simple way to calculate the normal vector is to cross with the Y or Z axis
+	//	Vec3 arbitrary_vector = (fabs(normalized_tangent.y()) > 0.9) ? Vec3(0, 0, 1) : Vec3(0, 1, 0);
+	//	Vec3 curve_normal = Normalize(cross(normalized_tangent, arbitrary_vector));
+	//	Vec3 offset = Normalize(curve_normal) * (width / 2.0);
 
-		// Create two triangles to represent the curve's width
-		point3 v0 = curve_points[i] - offset;
-		point3 v1 = curve_points[i] + offset;
-		point3 v2 = curve_points[i + 1] - offset;
-		point3 v3 = curve_points[i + 1] + offset;
+	//	// Create two triangles to represent the curve's width
+	//	point3 v0 = curve_points[i] - offset;
+	//	point3 v1 = curve_points[i] + offset;
+	//	point3 v2 = curve_points[i + 1] - offset;
+	//	point3 v3 = curve_points[i + 1] + offset;
 
-		// Create triangle objects
-		Triangle tri1(v0, v1, v2, material);
-		Triangle tri2(v1, v2, v3, material);
-		// Test intersection with the first triangle
-		if (tri1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-			hit_anything = true;
-			closest_so_far = rec.t;
-		}
+	//	// Create triangle objects
+	//	Triangle tri1(v0, v1, v2, material);
+	//	Triangle tri2(v1, v2, v3, material);
+	//	// Test intersection with the first triangle
+	//	if (tri1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+	//		hit_anything = true;
+	//		closest_so_far = rec.t;
+	//	}
 
-		// Test intersection with the second triangle
-		if (tri2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-			hit_anything = true;
-			closest_so_far = rec.t;
-		}
-	}
+	//	// Test intersection with the second triangle
+	//	if (tri2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+	//		hit_anything = true;
+	//		closest_so_far = rec.t;
+	//	}
+	//}
 
 	// ======================sphere intersection=========================
+	// bring the sphere to the curve 
 	for (const auto& curve_point : curve_points) {
 		Vec3 oc = castRay.origin() - curve_point; 
 		auto a = dot(castRay.direction(), castRay.direction());

@@ -127,7 +127,7 @@ private:
 			// if the material emits light ? no need to scatter 
 			if (!record.mat_ptr->scatter(r, record, light_attenuation, scattered)) 
 				return emittion_color;
-			else 
+			else	// apply bias to avoid shadow acne
 				color_from_scatter = light_attenuation * ray_color(Ray(record.int_p + bias * record.normal, scattered.direction()), world, depth - 1);
 			return emittion_color + color_from_scatter;
 

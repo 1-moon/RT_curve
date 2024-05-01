@@ -1,5 +1,5 @@
-#ifndef QUADRATIC_H
-#define QUADRATIC_H
+#ifndef QUADRANGLE_H
+#define QUADRANGLE_H
 #include "utility.h"
 #include "hittable.h"
 #include "hittable_list.h"
@@ -13,7 +13,9 @@ public:
 	
 		auto normal_vec = cross(u, v); 
 		unit_normal = Normalize(normal_vec);
-		D = dot(unit_normal, vertex);
+		// D is the distance from the origin to the plane.
+		d = dot(unit_normal, vertex);
+		// w is the unit normal vector of the plane.
 		w = normal_vec / dot(normal_vec, normal_vec);  
 	}
 
@@ -22,12 +24,12 @@ public:
 
 		// Hit ray parallel to the plane ? 
 		auto denom = dot(unit_normal, r.direction());
-
+		// Return false if the ray is parallel to the plane.
 		if (fabs(denom) < Epsilon) return false;
 
 
 		// Return false if the hit point parameter t is outside the ray interval.
-		auto t = (D - dot(unit_normal, r.origin())) / denom;
+		auto t = (d - dot(unit_normal, r.origin())) / denom;
 		if (!ray_t.contains(t))
 			return false;
 
@@ -36,7 +38,7 @@ public:
 		Vec3 planar_hitpt_vector = intersection - vertex;
 		auto alpha = dot(w, cross(planar_hitpt_vector, v));
 		auto beta = dot(w, cross(u, planar_hitpt_vector));
-
+		// Return false if the hit point is outside the 2D shape.
 		if (!is_interior(alpha, beta, rec))
 			return false;
 
@@ -66,32 +68,9 @@ public:
 		Vec3 u, v; 
 		shared_ptr<Material> material;
 		Vec3 unit_normal;
-		double D;
+		double d;
 		Vec3 w;
 
 };
 
-
-inline shared_ptr<Hittable_list> box(const point3& a, const point3& b, shared_ptr<Material> mat)
-{
-	// Returns the 3D box (six sides) that contains the two opposite vertices a & b.
-	auto sides = make_shared<Hittable_list>();
-
-	// Construct the two opposite vertices with the minimum and maximum coordinates.
-	auto min = point3(fmin(a.x(), b.x()), fmin(a.y(), b.y()), fmin(a.z(), b.z()));
-	auto max = point3(fmax(a.x(), b.x()), fmax(a.y(), b.y()), fmax(a.z(), b.z()));
-
-	auto dx = Vec3(max.x() - min.x(), 0, 0);
-	auto dy = Vec3(0, max.y() - min.y(), 0);
-	auto dz = Vec3(0, 0, max.z() - min.z());
-
-	sides->add(make_shared<Quadrangle>(point3(min.x(), min.y(), max.z()), dx, dy, mat)); // front
-	sides->add(make_shared<Quadrangle>(point3(max.x(), min.y(), max.z()), -dz, dy, mat)); // right
-	sides->add(make_shared<Quadrangle>(point3(max.x(), min.y(), min.z()), -dx, dy, mat)); // back
-	sides->add(make_shared<Quadrangle>(point3(min.x(), min.y(), min.z()), dz, dy, mat)); // left
-	sides->add(make_shared<Quadrangle>(point3(min.x(), max.y(), max.z()), dx, -dz, mat)); // top
-	sides->add(make_shared<Quadrangle>(point3(min.x(), min.y(), min.z()), dx, dz, mat)); // bottom
-
-	return sides;
-}
-#endif // !QUADRATIC_H
+#endif // !QUADRANGLE_H

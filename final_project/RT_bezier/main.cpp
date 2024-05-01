@@ -40,9 +40,9 @@ int main()
 	world.add(make_shared<Quadrangle>(point3(0, 200, 0), Vec3(555, 0, 0), Vec3(0, 0, 555), white));
 	
 	// Call curve  
-	world.add(make_shared<BezierCurve>(p0, p1, p2, p3, green));
+	//world.add(make_shared<BezierCurve>(p0, p1, p2, p3, green));
 	// Call surface
-	//world.add(make_shared<BezierSurface>(controlPoints2, red));
+	world.add(make_shared<BezierSurface>(controlPoints2, red));
 
 
 	Camera camera;

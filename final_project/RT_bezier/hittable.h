@@ -18,9 +18,7 @@ class Hit_record {
 		Hit_record() : int_p(0,0,0), normal(0,0,0), t(0.0f), mat_ptr(nullptr), u(0.0f), v(0.0f), front_face(false){}
 		
 		void set_face_normal(const Ray& r, const Vec3& outward_normal) {
-			// Sets the hit record normal vector.
-			// NOTE: the parameter `outward_normal` is assumed to have unit length.
-
+			// set the normal of the object at the intersection point
 			front_face = dot(r.direction(), outward_normal) < 0;
 			normal = front_face ? outward_normal : -outward_normal;
 		}

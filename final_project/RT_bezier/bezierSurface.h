@@ -80,14 +80,13 @@ point3 BezierSurface::BezierSurfacePoint(double u, double v) const {
     for (int i = 0; i < 4; ++i) {
         vCurve[i] = cubicPolynomial(uCurve, v);
     }
-    // 
     return vCurve[0];
 }
 
 bool BezierSurface::TestIntersection(const Ray& castRay, Interval ray_t, Hit_record& rec) const {
     bool hit_anything = false;
     double closest_so_far = ray_t.max;
-
+    // iterate over all triangles and find the closest intersection
     for (const auto& tri : tessellated_triangles) {
         if (tri.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
             closest_so_far = rec.t;

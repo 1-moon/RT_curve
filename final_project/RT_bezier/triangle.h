@@ -36,16 +36,20 @@ bool Triangle::TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) c
     // ray and triangle are parallel if det is close to 0
     if (fabs(det) < kEpsilon) return false;
 
-    double invDet = 1 / det;
-    Vec3 tvec = r.origin() - vertex0;
-    double u = dot(tvec, pvec) * invDet;
+    double invDet = 1 / det;    
+    Vec3 tvec = r.origin() - vertex0; // t vector for barycentric coordinates
+    
+    // Set barycentric coordinate u
+    double u = dot(tvec, pvec) * invDet;    
     if (u < 0 || u > 1) return false;
-
-    Vec3 qvec = cross(tvec, v0v1);
+    
+    Vec3 qvec = cross(tvec, v0v1);  // q vector for barycentric coordinates
+    
+    // Set barycentric coordinate v
     double v = dot(r.direction(), qvec) * invDet;
     if (v < 0 || u + v > 1) return false;
-
-    double t = dot(v0v2, qvec) * invDet;
+    
+    double t = dot(v0v2, qvec) * invDet; 
     if (!ray_t.surrounds(t)) return false;
 
     // Update hit record
