@@ -5,9 +5,9 @@
 #include "hittable_list.h"
 
 
-class Quadratic : public Hittable {
+class Quadrangle : public Hittable {
 public:
-	Quadratic(const point3& _vertex, const Vec3& _u, const Vec3& _v, shared_ptr<Material> mat)
+	Quadrangle(const point3& _vertex, const Vec3& _u, const Vec3& _v, shared_ptr<Material> mat)
 
 		: vertex(_vertex), u(_u), v(_v), material(mat) {
 	
@@ -86,12 +86,12 @@ inline shared_ptr<Hittable_list> box(const point3& a, const point3& b, shared_pt
 	auto dy = Vec3(0, max.y() - min.y(), 0);
 	auto dz = Vec3(0, 0, max.z() - min.z());
 
-	sides->add(make_shared<Quadratic>(point3(min.x(), min.y(), max.z()), dx, dy, mat)); // front
-	sides->add(make_shared<Quadratic>(point3(max.x(), min.y(), max.z()), -dz, dy, mat)); // right
-	sides->add(make_shared<Quadratic>(point3(max.x(), min.y(), min.z()), -dx, dy, mat)); // back
-	sides->add(make_shared<Quadratic>(point3(min.x(), min.y(), min.z()), dz, dy, mat)); // left
-	sides->add(make_shared<Quadratic>(point3(min.x(), max.y(), max.z()), dx, -dz, mat)); // top
-	sides->add(make_shared<Quadratic>(point3(min.x(), min.y(), min.z()), dx, dz, mat)); // bottom
+	sides->add(make_shared<Quadrangle>(point3(min.x(), min.y(), max.z()), dx, dy, mat)); // front
+	sides->add(make_shared<Quadrangle>(point3(max.x(), min.y(), max.z()), -dz, dy, mat)); // right
+	sides->add(make_shared<Quadrangle>(point3(max.x(), min.y(), min.z()), -dx, dy, mat)); // back
+	sides->add(make_shared<Quadrangle>(point3(min.x(), min.y(), min.z()), dz, dy, mat)); // left
+	sides->add(make_shared<Quadrangle>(point3(min.x(), max.y(), max.z()), dx, -dz, mat)); // top
+	sides->add(make_shared<Quadrangle>(point3(min.x(), min.y(), min.z()), dx, dz, mat)); // bottom
 
 	return sides;
 }

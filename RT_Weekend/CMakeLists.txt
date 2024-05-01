@@ -2,30 +2,30 @@
 cmake_minimum_required(VERSION 3.1.0)
 
 # project info
-project(RT_OneWeekend VERSION 3.0.0 LANGUAGES CXX)
+project(RT_bezier VERSION 3.0.0 LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 11)
 
 set ( curve
- RT_OneWeekend/bezierCurve.h
- RT_OneWeekend/camera.h
- RT_OneWeekend/color.h
- RT_OneWeekend/hittable.h
- RT_OneWeekend/hittable_list.h
- RT_OneWeekend/interval.h
- RT_OneWeekend/interval.cpp
- RT_OneWeekend/main.cpp
- RT_OneWeekend/ray.h 
- RT_OneWeekend/utility.h
- RT_OneWeekend/sphere.h
- RT_OneWeekend/vec3.h
- RT_OneWeekend/material.h
- RT_OneWeekend/texture.h
- RT_OneWeekend/bezierSurface.h
- RT_OneWeekend/triangle.h
- RT_OneWeekend/quadratic.h
+ RT_bezier/bezierCurve.h
+ RT_bezier/camera.h
+ RT_bezier/color.h
+ RT_bezier/hittable.h
+ RT_bezier/hittable_list.h
+ RT_bezier/interval.h
+ RT_bezier/interval.cpp
+ RT_bezier/main.cpp
+ RT_bezier/ray.h 
+ RT_bezier/utility.h
+ RT_bezier/sphere.h
+ RT_bezier/vec3.h
+ RT_bezier/material.h
+ RT_bezier/texture.h
+ RT_bezier/bezierSurface.h
+ RT_bezier/triangle.h
+ RT_bezier/quadrangle.h
 )
 
-include_directories(RT_OneWeekend)
+include_directories(RT_bezier)
 
-add_executable(curve ${EXTERNAL} ${CURVE})
+add_executable(curve ${curve})
 

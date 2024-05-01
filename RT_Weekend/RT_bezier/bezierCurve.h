@@ -7,7 +7,7 @@
 #include <vector>
 #include <cassert>
 #include "triangle.h"
-#include "quadratic.h"
+#include "Quadrangle.h"
 class BezierCurve : public Hittable
 {
 public:
@@ -109,73 +109,73 @@ bool BezierCurve::TestIntersection(const Ray& castRay, Interval ray_t, Hit_recor
 	double closest_so_far = ray_t.max;
 
 	// =========================quadratic intersection=========================
-	//for (int i = 0; i < curve_points.size() - 1; i++) {
-	//	// Calculate the normal at the current point on the curve
-	//	Vec3 curve_tangent = curve_points[i + 1] - curve_points[i];
-	//	Vec3 arbitrary_normal(0, 1, 0); // Default normal for simplicity
-	//	if (curve_tangent.length() > 0) {
-	//		arbitrary_normal = Normalize(cross(curve_tangent, Vec3(0, 0, 1))); // Assuming Z is up
-	//	}
+	for (int i = 0; i < curve_points.size() - 1; i++) {
+		// Calculate the normal at the current point on the curve
+		Vec3 curve_tangent = curve_points[i + 1] - curve_points[i];
+		Vec3 arbitrary_normal(0, 1, 0); // Default normal for simplicity
+		if (curve_tangent.length() > 0) {
+			arbitrary_normal = Normalize(cross(curve_tangent, Vec3(0, 0, 1))); // Assuming Z is up
+		}
 
-	//	Vec3 curve_normal = Normalize(cross(curve_tangent, arbitrary_normal));
-	//	Vec3 width_offset = curve_normal * (width / 2.0);
+		Vec3 curve_normal = Normalize(cross(curve_tangent, arbitrary_normal));
+		Vec3 width_offset = curve_normal * (width / 2.0);
 
-	//	// Define the vertices of the quad
-	//	point3 v0 = curve_points[i] - width_offset;
-	//	point3 v1 = curve_points[i] + width_offset;
-	//	point3 v2 = curve_points[i + 1] - width_offset;
-	//	point3 v3 = curve_points[i + 1] + width_offset;
+		// Define the vertices of the quad
+		point3 v0 = curve_points[i] - width_offset;
+		point3 v1 = curve_points[i] + width_offset;
+		point3 v2 = curve_points[i + 1] - width_offset;
+		point3 v3 = curve_points[i + 1] + width_offset;
 
-	//	// Create quad objects
-	//	Quadratic quad1(v0, v1 - v0, v3 - v1, material); // Using two sides as the vector directions
-	//	Quadratic quad2(v0, v3 - v0, v2 - v0, material); // Second part of quad to cover entire face
+		// Create quad objects
+		Quadrangle quad1(v0, v1 - v0, v3 - v1, material); // Using two sides as the vector directions
+		Quadrangle quad2(v0, v3 - v0, v2 - v0, material); // Second part of quad to cover entire face
 
-	//	// Test intersection with the first part of the quad
-	//	if (quad1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-	//		hit_anything = true;
-	//		closest_so_far = rec.t;
-	//	}
+		// Test intersection with the first part of the quad
+		if (quad1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+			hit_anything = true;
+			closest_so_far = rec.t;
+		}
 
-	//	// Test intersection with the second part of the quad
-	//	if (quad2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-	//		hit_anything = true;
-	//		closest_so_far = rec.t;
-	//	}
-	//}
+		// Test intersection with the second part of the quad
+		if (quad2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+			hit_anything = true;
+			closest_so_far = rec.t;
+		}
+	}
 
 
 	// =========================triangle intersection=========================
-	//for (int i = 0; i < curve_points.size() - 1; i++) {
-	//	Vec3 tangent = curve_points[i + 1] - curve_points[i]; // 접선 벡터 계산
-	//	Vec3 normalized_tangent = Normalize(tangent);
+	for (int i = 0; i < curve_points.size() - 1; i++) {
+		Vec3 tangent = curve_points[i + 1] - curve_points[i]; // 접선 벡터 계산
+		Vec3 normalized_tangent = Normalize(tangent);
 
-	//	// 법선 벡터를 구하는 간단한 방법은 Y축 또는 Z축과 외적을 구하는 것입니다.
-	//	// (실제 사용법에 따라 다른 축을 사용할 수도 있습니다.)
-	//	Vec3 arbitrary_vector = (fabs(normalized_tangent.y()) > 0.9) ? Vec3(0, 0, 1) : Vec3(0, 1, 0);
-	//	Vec3 curve_normal = Normalize(cross(normalized_tangent, arbitrary_vector));
-	//	Vec3 offset = Normalize(curve_normal) * (width / 2.0);
+		// 법선 벡터를 구하는 간단한 방법은 Y축 또는 Z축과 외적을 구하는 것입니다.
+		// (실제 사용법에 따라 다른 축을 사용할 수도 있습니다.)
+		Vec3 arbitrary_vector = (fabs(normalized_tangent.y()) > 0.9) ? Vec3(0, 0, 1) : Vec3(0, 1, 0);
+		Vec3 curve_normal = Normalize(cross(normalized_tangent, arbitrary_vector));
+		Vec3 offset = Normalize(curve_normal) * (width / 2.0);
 
-	//	// Create two triangles to represent the curve's width
-	//	point3 v0 = curve_points[i] - offset;
-	//	point3 v1 = curve_points[i] + offset;
-	//	point3 v2 = curve_points[i + 1] - offset;
-	//	point3 v3 = curve_points[i + 1] + offset;
+		// Create two triangles to represent the curve's width
+		point3 v0 = curve_points[i] - offset;
+		point3 v1 = curve_points[i] + offset;
+		point3 v2 = curve_points[i + 1] - offset;
+		point3 v3 = curve_points[i + 1] + offset;
 
-	//	// Create triangle objects
-	//	Triangle tri1(v0, v1, v2, material);
-	//	Triangle tri2(v1, v2, v3, material);
-	//	// Test intersection with the first triangle
-	//	if (tri1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-	//		hit_anything = true;
-	//		closest_so_far = rec.t;
-	//	}
+		// Create triangle objects
+		Triangle tri1(v0, v1, v2, material);
+		Triangle tri2(v1, v2, v3, material);
+		// Test intersection with the first triangle
+		if (tri1.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+			hit_anything = true;
+			closest_so_far = rec.t;
+		}
 
-	//	// Test intersection with the second triangle
-	//	if (tri2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
-	//		hit_anything = true;
-	//		closest_so_far = rec.t;
-	//	}
-	//}
+		// Test intersection with the second triangle
+		if (tri2.TestIntersection(castRay, ray_t, rec) && rec.t < closest_so_far) {
+			hit_anything = true;
+			closest_so_far = rec.t;
+		}
+	}
 
 	// ======================sphere intersection=========================
 	for (const auto& curve_point : curve_points) {
