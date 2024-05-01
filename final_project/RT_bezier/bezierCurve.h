@@ -146,11 +146,10 @@ bool BezierCurve::TestIntersection(const Ray& castRay, Interval ray_t, Hit_recor
 
 	// =========================triangle intersection=========================
 	for (int i = 0; i < curve_points.size() - 1; i++) {
-		Vec3 tangent = curve_points[i + 1] - curve_points[i]; // 접선 벡터 계산
-		Vec3 normalized_tangent = Normalize(tangent);
+		Vec3 tangent = curve_points[i + 1] - curve_points[i]; // Calculate the tangent vector
+		Vec3 normalized_tangent = Normalize(tangent);		  // Normalize the tangent vector
 
-		// 법선 벡터를 구하는 간단한 방법은 Y축 또는 Z축과 외적을 구하는 것입니다.
-		// (실제 사용법에 따라 다른 축을 사용할 수도 있습니다.)
+		// A simple way to calculate the normal vector is to cross with the Y or Z axis
 		Vec3 arbitrary_vector = (fabs(normalized_tangent.y()) > 0.9) ? Vec3(0, 0, 1) : Vec3(0, 1, 0);
 		Vec3 curve_normal = Normalize(cross(normalized_tangent, arbitrary_vector));
 		Vec3 offset = Normalize(curve_normal) * (width / 2.0);

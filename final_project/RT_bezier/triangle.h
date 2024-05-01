@@ -1,3 +1,10 @@
+/*
+    * Triangle class
+    * 
+    *  This class will be used to tessellate the Bezier surface into triangles
+    */
+
+
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
@@ -17,9 +24,6 @@ public:
     point3 vertex0, vertex1, vertex2; 
     shared_ptr<Material> material; 
 };
-
-
-
 bool Triangle::TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const {
     
     // ray- tirangle intersection test

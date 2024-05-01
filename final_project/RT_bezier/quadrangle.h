@@ -4,11 +4,11 @@
 #include "hittable.h"
 #include "hittable_list.h"
 
+constexpr double Epsilon = 1e-6;
 
 class Quadrangle : public Hittable {
 public:
 	Quadrangle(const point3& _vertex, const Vec3& _u, const Vec3& _v, shared_ptr<Material> mat)
-
 		: vertex(_vertex), u(_u), v(_v), material(mat) {
 	
 		auto normal_vec = cross(u, v); 
@@ -17,13 +17,13 @@ public:
 		w = normal_vec / dot(normal_vec, normal_vec);  
 	}
 
-	//Aabb BoundingBox() const override { return bBox; }
 
 	bool TestIntersection(const Ray& r, Interval ray_t, Hit_record& rec) const override {
 
 		// Hit ray parallel to the plane ? 
 		auto denom = dot(unit_normal, r.direction());
-		if (fabs(denom) < 1e-6) return false;
+
+		if (fabs(denom) < Epsilon) return false;
 
 
 		// Return false if the hit point parameter t is outside the ray interval.
@@ -75,7 +75,6 @@ public:
 inline shared_ptr<Hittable_list> box(const point3& a, const point3& b, shared_ptr<Material> mat)
 {
 	// Returns the 3D box (six sides) that contains the two opposite vertices a & b.
-
 	auto sides = make_shared<Hittable_list>();
 
 	// Construct the two opposite vertices with the minimum and maximum coordinates.

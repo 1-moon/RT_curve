@@ -32,9 +32,9 @@ bool Sphere::TestIntersection(const Ray& cameraRay, Interval ray_t, Hit_record& 
 	
 	auto sqrt_d = sqrt(discriminant);
 
-	//Find the nearest root that lies in the acceptable range.
+	// Find the nearest root that lies in the acceptable range.
 	auto root = (-half_b-sqrt_d) / a;
-
+	// if the root is not in the interval, try the other root
 	if (!ray_t.surrounds(root)) return false;
 	// update the output parameter rec(record)
 	rec.t = root;	
