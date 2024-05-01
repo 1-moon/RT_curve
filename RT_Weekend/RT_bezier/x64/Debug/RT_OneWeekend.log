@@ -1,8 +1,0 @@
-﻿  chapter3.cpp
-  chapter4.cpp
-  chapter5.cpp
-C:\Users\hhm91\Desktop\Final project\RT_Tutorial\RT_Weekend\RT_OneWeekend\chapter5.cpp(67,14): error C2679: binary '+': no operator found which takes a right-hand operand of type 'double' (or there is no acceptable conversion)
-C:\Users\hhm91\Desktop\Final project\RT_Tutorial\RT_Weekend\RT_OneWeekend\Vec3.h(64,6): message : could be 'Vec3 operator +(const Vec3 &,const Vec3 &)'
-C:\Users\hhm91\Desktop\Final project\RT_Tutorial\RT_Weekend\RT_OneWeekend\chapter5.cpp(67,14): message : while trying to match the argument list '(point3, double)'
-C:\Users\hhm91\Desktop\Final project\RT_Tutorial\RT_Weekend\RT_OneWeekend\chapter5.cpp(68,5): error C2146: syntax error: missing ';' before identifier 'pixel_color'
-  Generating Code...
