@@ -9,7 +9,7 @@
 #include "bezierSurface.h"
 #include "sphere.h"
 #include "triangle.h"
-#include "quadratic.h"
+#include "quadrangle.h"
 
 
 int main()
@@ -36,8 +36,8 @@ int main()
 
 	// Set up the space   
 	Hittable_list world;
-	world.add(make_shared<Quadratic>(point3(343, 450, 332), Vec3(-130, 0, 0), Vec3(0, 0, -105), light));
-	world.add(make_shared<Quadratic>(point3(0, 200, 0), Vec3(555, 0, 0), Vec3(0, 0, 555), white));
+	world.add(make_shared<Quadrangle>(point3(343, 450, 332), Vec3(-130, 0, 0), Vec3(0, 0, -105), light));
+	world.add(make_shared<Quadrangle>(point3(0, 200, 0), Vec3(555, 0, 0), Vec3(0, 0, 555), white));
 	
 	// Call curve  
 	world.add(make_shared<BezierCurve>(p0, p1, p2, p3, green));
