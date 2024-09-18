@@ -1,4 +1,11 @@
-# instruction - window  
+# Ray tracer with Curve primitive
+This is a simple ray tracer adeveloped as a final project for COMP3931. 
+It refers to many part of ray tracing tutorial by Peter shierly. 
+
+## Basic Ray Tracing
+The basic ray tracing model is as follows. A camera is placed in the world and rays are cast from the camera's position to points on an imaginary image plane. It also deals with Positionable camera, lighting, reflections and so on. In this case each ray represents a pixel in the output image and the resulting color of the ray determines the color output for the pixel. 
+ 
+## Instruction - window  
 Check:
   install visual studio for c++ 
   install cmake 
